@@ -1,0 +1,40 @@
+name: Build macOS .app
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install pyinstaller pynput
+
+    - name: Build .app with PyInstaller
+      run: |
+        pyinstaller --onefile --windowed --name SparxAssistant --icon=icon.icns SparxAssistant.py
+
+    - name: Archive .app
+      run: |
+        cd dist
+        zip -r SparxAssistant-mac.zip SparxAssistant.app
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: SparxAssistant-mac
+        path: dist/SparxAssistant-mac.zip
