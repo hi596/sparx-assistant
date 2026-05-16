@@ -34,7 +34,7 @@ jobs:
         zip -r SparxAssistant-mac.zip SparxAssistant.app
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: SparxAssistant-mac
         path: dist/SparxAssistant-mac.zip
